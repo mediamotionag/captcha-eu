@@ -1,34 +1,27 @@
-<?php 
+<?php
 use Symfony\Component\HttpFoundation\Request;
-use \Contao\System; 
-$GLOBALS['TL_JAVASCRIPT'][] = 'https://www.captcha.eu/sdk.js';
+use \Contao\System;
 
 $this->extend('form_row'); ?>
 
 <?php $this->block('field');
 ?>
 
-<?php 
+<?php
 if (!System::getContainer()->get('contao.routing.scope_matcher')->isBackendRequest(System::getContainer()->get('request_stack')->getCurrentRequest() ?? Request::create(''))){
+    $request = System::getContainer()->get('request_stack')->getCurrentRequest() ?? Request::create('');
+    $checkerId = 'dc-captcha-eu-checker-' . $this->id;
+    $bootstrapUrl = $this->route('duncrow_captcha_eu_frontend', ['_locale' => $request->getLocale()]) . '?' . http_build_query([
+        'root' => $this->rootPageId,
+        'widget' => $this->recaptchaType,
+    ]);
+    $GLOBALS['TL_JAVASCRIPT'][] = $this->asset('bundles/duncrowgmbhcaptchaeu/captcha-eu-bootstrap.js') . '|static|defer';
 ?>
     <?php if ($this->hasErrors()){ ?>
         <p class="error"><?= $this->getErrorAsString() ?></p>
     <?php } ?>
-    <div id="dc-captcha-eu-checker" class="cpt_widget" data-key="<?= $this->publicKey ?>" data-theme="clean"></div>
-    <?php if($this->recaptchaType == 'widget') { ?> 
-        <script>
-           KROT.init();
-        </script>
-    <?php } else{ ?>
-        <script>
-            KROT.setup("<?= $this->publicKey ?>");
-
-            let checker = document.getElementById('dc-captcha-eu-checker')?.closest('form'); 
-            KROT.interceptForm(checker);
-        </script>
-    <?php 
-        } 
-    } else{
+    <div id="<?= $checkerId ?>" class="cpt_widget" data-captcha-eu-config-url="<?= $bootstrapUrl ?>"></div>
+    <?php } else{
      ?>
 <span>Captcha-Eu <br><i><?= $GLOBALS['TL_LANG']['tl_form_field']['howTo'] ?> </i></span>
 

@@ -13,15 +13,15 @@ class FormCaptchaEu extends FormCaptcha
     protected $privateKey = null;
     protected $rootPageId = null;
 
-    public function __construct($arrAttributes = null) 
+    public function __construct($arrAttributes = null)
     {
         parent::__construct($arrAttributes);
         if(isset($GLOBALS['objPage'])){
-            $rootId = $GLOBALS['objPage']->rootId; 
+            $rootId = $GLOBALS['objPage']->rootId;
             $rootPage = PageModel::findByPk($rootId);
             $this->rootPageId = $rootId;
-            $this->recaptchaType = $this->useCaptchaEuWidget ? 'widget' : 'invisible' ; 
-            $this->publicKey =  $rootPage->captchaEuPublicKey; 
+            $this->recaptchaType = $this->useCaptchaEuWidget ? 'widget' : 'invisible' ;
+            $this->publicKey =  $rootPage->captchaEuPublicKey;
             $this->privateKey = $rootPage->captchaEuPrivateKey;
         }
         if($this->useCaptchaEu){
@@ -40,13 +40,13 @@ class FormCaptchaEu extends FormCaptcha
     public function validate()
     {
         if ($this->useFallback()) return parent::validate();
-        
+
         try {
             function checkSolution($solution, $privateKey) {
                 $ch = curl_init("https://www.captcha.eu/validate");
                 curl_setopt($ch, CURLOPT_POSTFIELDS, $solution);
                 curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                    'Content-Type: application/json', 
+                    'Content-Type: application/json',
                     'Rest-Key: '.$privateKey,
                     'X-Partner-ID: duncrow',
                     'X-Platform: contao',
@@ -56,7 +56,7 @@ class FormCaptchaEu extends FormCaptcha
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                 $result = curl_exec($ch);
                 curl_close($ch);
-          
+
                 $resultObject = json_decode($result);
                 if ($resultObject->success) {
                   return true;
@@ -71,7 +71,7 @@ class FormCaptchaEu extends FormCaptcha
                     $this->class = 'error';
                     $this->addError($GLOBALS['TL_LANG']['ERR']['catpchaEu']);
                 }else{
-                    // return true; 
+                    // return true;
                 }
 
         } catch (\Exception $e) {
@@ -79,6 +79,6 @@ class FormCaptchaEu extends FormCaptcha
             $this->addError($GLOBALS['TL_LANG']['ERR']['catpchaEu']);
         }
     }
-    
+
 
 }
