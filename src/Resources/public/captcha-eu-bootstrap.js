@@ -31,7 +31,7 @@
         document.head.appendChild(script);
     });
 
-    const loadSdk = async() => {
+    const loadSdk = async () => {
         if (window.KROT) {
             return window.KROT;
         }
@@ -41,7 +41,7 @@
         return sdkPromise;
     };
 
-    const loadConfig = async(configUrl) => {
+    const loadConfig = async (configUrl) => {
         const response = await fetch(configUrl, {
             cache: 'no-store',
             headers: {
@@ -74,7 +74,7 @@
         window.KROT.init();
     };
 
-    const initCaptcha = async(target, config) => {
+    const initCaptcha = async (target, config) => {
         if (!target || !config.publicKey || target.dataset.captchaEuBootstrapped === '1') {
             return;
         }
@@ -104,7 +104,7 @@
         }
     };
 
-    const bootstrapTarget = async(target) => {
+    const bootstrapTarget = async (target) => {
         const configUrl = target.dataset.captchaEuConfigUrl;
 
         if (!configUrl || target.dataset.captchaEuBound === '1') {
