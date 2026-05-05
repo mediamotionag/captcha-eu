@@ -11,6 +11,7 @@ class FormCaptchaEu extends FormCaptcha
     protected $recaptchaType = 'invisible';
     protected $publicKey = null;
     protected $privateKey = null;
+    protected $rootPageId = null;
 
     public function __construct($arrAttributes = null) 
     {
@@ -18,6 +19,7 @@ class FormCaptchaEu extends FormCaptcha
         if(isset($GLOBALS['objPage'])){
             $rootId = $GLOBALS['objPage']->rootId; 
             $rootPage = PageModel::findByPk($rootId);
+            $this->rootPageId = $rootId;
             $this->recaptchaType = $this->useCaptchaEuWidget ? 'widget' : 'invisible' ; 
             $this->publicKey =  $rootPage->captchaEuPublicKey; 
             $this->privateKey = $rootPage->captchaEuPrivateKey;

@@ -1,0 +1,3 @@
+duncrow_captcha_eu:
+    resource: ../src/Controller/
+    type: attribute
